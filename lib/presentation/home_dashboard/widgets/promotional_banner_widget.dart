@@ -1,4 +1,3 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
@@ -12,14 +11,18 @@ class PromotionalBannerWidget extends StatefulWidget {
       _PromotionalBannerWidgetState();
 }
 
-class _PromotionalBannerWidgetState extends State<PromotionalBannerWidget> {
+class _PromotionalBannerWidgetState extends State<PromotionalBannerWidget>
+    with SingleTickerProviderStateMixin {
   int _currentIndex = 0;
-  final CarouselSliderController _carouselController =
-      CarouselSliderController();
+  final PageController _pageController = PageController(viewportFraction: 0.9);
+  late final List<Map<String, dynamic>> _banners;
+  late final AnimationController _autoController;
+  static const _autoPlayInterval = Duration(seconds: 4);
 
   @override
-  Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> banners = [
+  void initState() {
+    super.initState();
+    _banners = [
       {
         'title': 'Get 10% Cashback',
         'subtitle': 'On your first UPI payment',
@@ -46,135 +49,162 @@ class _PromotionalBannerWidgetState extends State<PromotionalBannerWidget> {
       },
     ];
 
+    _autoController = AnimationController(
+      vsync: this,
+      duration: _autoPlayInterval,
+    )..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          if (_pageController.hasClients) {
+            final next = (_currentIndex + 1) % _banners.length;
+            _pageController.animateToPage(
+              next,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+          }
+          _autoController.forward(from: 0); // loop
+        }
+      });
+    _autoController.forward();
+  }
+
+  @override
+  void dispose() {
+    _autoController.dispose();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
       child: Column(
         children: [
-          CarouselSlider.builder(
-            carouselController: _carouselController,
-            itemCount: banners.length,
-            itemBuilder: (context, index, realIndex) {
-              final banner = banners[index];
-              return Container(
-                width: 90.w,
-                margin: EdgeInsets.symmetric(horizontal: 1.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppTheme.lightTheme.colorScheme.shadow
-                          .withValues(alpha: 0.1),
-                      offset: const Offset(0, 4),
-                      blurRadius: 12,
-                      spreadRadius: 0,
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Stack(
-                    children: [
-                      CustomImageWidget(
-                        imageUrl: banner['image'] as String,
-                        width: double.infinity,
-                        height: 20.h,
-                        fit: BoxFit.cover,
-                      ),
-                      Container(
-                        width: double.infinity,
-                        height: 20.h,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.transparent,
-                              (banner['color'] as Color).withValues(alpha: 0.8),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: Padding(
-                          padding: EdgeInsets.all(4.w),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                banner['title'] as String,
-                                style: AppTheme.lightTheme.textTheme.titleLarge
-                                    ?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              SizedBox(height: 0.5.h),
-                              Text(
-                                banner['subtitle'] as String,
-                                style: AppTheme.lightTheme.textTheme.bodyMedium
-                                    ?.copyWith(
-                                  color: Colors.white.withValues(alpha: 0.9),
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              SizedBox(height: 2.h),
-                              ElevatedButton(
-                                onPressed: () {
-                                  // Handle banner action
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: banner['color'] as Color,
-                                  elevation: 0,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 6.w, vertical: 1.h),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                                child: Text(
-                                  banner['action'] as String,
-                                  style: AppTheme
-                                      .lightTheme.textTheme.bodyMedium
-                                      ?.copyWith(
-                                    color: banner['color'] as Color,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+          SizedBox(
+            height: 20.h,
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: _banners.length,
+              onPageChanged: (index) {
+                setState(() => _currentIndex = index);
+              },
+              itemBuilder: (context, index) {
+                final banner = _banners[index];
+                return Container(
+                  width: 90.w,
+                  margin: EdgeInsets.symmetric(horizontal: 1.w),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.lightTheme.colorScheme.shadow
+                            .withValues(alpha: 0.1),
+                        offset: const Offset(0, 4),
+                        blurRadius: 12,
+                        spreadRadius: 0,
                       ),
                     ],
                   ),
-                ),
-              );
-            },
-            options: CarouselOptions(
-              height: 20.h,
-              viewportFraction: 0.9,
-              autoPlay: true,
-              autoPlayInterval: const Duration(seconds: 4),
-              autoPlayAnimationDuration: const Duration(milliseconds: 800),
-              autoPlayCurve: Curves.fastOutSlowIn,
-              enlargeCenterPage: true,
-              onPageChanged: (index, reason) {
-                setState(() {
-                  _currentIndex = index;
-                });
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Stack(
+                      children: [
+                        CustomImageWidget(
+                          imageUrl: banner['image'] as String,
+                          width: double.infinity,
+                          height: 20.h,
+                          fit: BoxFit.cover,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: 20.h,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                (banner['color'] as Color)
+                                    .withValues(alpha: 0.8),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: Padding(
+                            padding: EdgeInsets.all(4.w),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  banner['title'] as String,
+                                  style: AppTheme
+                                      .lightTheme.textTheme.titleLarge
+                                      ?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                SizedBox(height: 0.5.h),
+                                Text(
+                                  banner['subtitle'] as String,
+                                  style: AppTheme
+                                      .lightTheme.textTheme.bodyMedium
+                                      ?.copyWith(
+                                    color: Colors.white.withValues(alpha: 0.9),
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                SizedBox(height: 2.h),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    // Handle banner action
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    foregroundColor: banner['color'] as Color,
+                                    elevation: 0,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 6.w, vertical: 1.h),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    banner['action'] as String,
+                                    style: AppTheme
+                                        .lightTheme.textTheme.bodyMedium
+                                        ?.copyWith(
+                                      color: banner['color'] as Color,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
               },
             ),
           ),
           SizedBox(height: 2.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: banners.asMap().entries.map((entry) {
+            children: _banners.asMap().entries.map((entry) {
               return GestureDetector(
-                onTap: () => _carouselController.animateToPage(entry.key),
+                onTap: () => _pageController.animateToPage(
+                  entry.key,
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeInOut,
+                ),
                 child: Container(
                   width: _currentIndex == entry.key ? 8.w : 2.w,
                   height: 1.h,

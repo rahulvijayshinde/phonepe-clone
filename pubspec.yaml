@@ -19,22 +19,21 @@ dependencies:
   
   # Feature dependencies - safe to modify
   cached_network_image: ^3.3.1
-  connectivity_plus: ^6.1.4
+  connectivity_plus: ^7.0.0
   dio: ^5.4.0
-  fluttertoast: ^8.2.4
+  fluttertoast: ^8.2.13
   fl_chart: ^0.65.0
-  carousel_slider: ^5.1.1
-  camera: ^0.10.5+5
+  camera: ^0.11.2
   image_picker: ^1.0.4
-  permission_handler: ^11.1.0
-  mobile_scanner: ^7.0.0-beta.8
-  flutter_slidable: ^4.0.1
+  permission_handler: ^12.0.1
+  mobile_scanner: ^5.1.1
+  flutter_slidable: ^3.1.0
 
   universal_html: ^2.2.4
 dev_dependencies:
   flutter_test:    # CRITICAL: Required for Flutter project testing - DO NOT REMOVE
     sdk: flutter   # CRITICAL: Required for Flutter project testing - DO NOT REMOVE
-  flutter_lints: ^5.0.0 # CRITICAL: Required for code quality - DO NOT REMOVE
+  flutter_lints: ^6.0.0 # CRITICAL: Required for code quality - DO NOT REMOVE
 
 flutter:
   uses-material-design: true # CRITICAL: Required for Material icon font - DO NOT REMOVE

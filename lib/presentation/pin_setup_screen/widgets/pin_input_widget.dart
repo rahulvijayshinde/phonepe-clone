@@ -74,8 +74,8 @@ class _PinInputWidgetState extends State<PinInputWidget> {
     }
   }
 
-  void _onKeyPressed(RawKeyEvent event, int index) {
-    if (event is RawKeyDownEvent &&
+  void _onKeyPressed(KeyEvent event, int index) {
+    if (event is KeyDownEvent &&
         event.logicalKey == LogicalKeyboardKey.backspace) {
       if (_controllers[index].text.isEmpty && index > 0) {
         _controllers[index - 1].clear();
@@ -112,9 +112,9 @@ class _PinInputWidgetState extends State<PinInputWidget> {
                 borderRadius: BorderRadius.circular(12),
                 color: AppTheme.lightTheme.colorScheme.surface,
               ),
-              child: RawKeyboardListener(
+              child: KeyboardListener(
                 focusNode: FocusNode(),
-                onKey: (event) => _onKeyPressed(event, index),
+                onKeyEvent: (event) => _onKeyPressed(event, index),
                 child: TextField(
                   controller: _controllers[index],
                   focusNode: _focusNodes[index],
