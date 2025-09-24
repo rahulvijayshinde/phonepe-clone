@@ -13,25 +13,25 @@ class QuickActionsWidget extends StatelessWidget {
         'icon': 'send',
         'label': 'Send Money',
         'color': AppTheme.lightTheme.colorScheme.primary,
-        'route': '/send-money',
+        'route': AppRoutes.sendMoney,
       },
       {
         'icon': 'receipt_long',
         'label': 'Pay Bills',
         'color': const Color(0xFF00c851),
-        'route': '/pay-bills',
+        'route': AppRoutes.payBills,
       },
       {
         'icon': 'phone_android',
         'label': 'Recharge',
         'color': const Color(0xFFff8800),
-        'route': '/recharge',
+        'route': AppRoutes.recharge,
       },
       {
         'icon': 'qr_code_scanner',
         'label': 'Scan QR',
         'color': const Color(0xFF5f259f),
-        'route': '/qr-code-scanner',
+        'route': AppRoutes.qrCodeScanner,
       },
     ];
 
@@ -51,7 +51,7 @@ class QuickActionsWidget extends StatelessWidget {
           ),
           SizedBox(height: 2.h),
           SizedBox(
-            height: 12.h,
+            height: 13.5.h,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(horizontal: 2.w),
@@ -64,8 +64,8 @@ class QuickActionsWidget extends StatelessWidget {
                     Navigator.pushNamed(context, action['route'] as String);
                   },
                   child: Container(
-                    width: 18.w,
-                    padding: EdgeInsets.all(2.w),
+                    width: 20.w,
+                    padding: EdgeInsets.all(2.2.w),
                     decoration: BoxDecoration(
                       color: AppTheme.lightTheme.colorScheme.surface,
                       borderRadius: BorderRadius.circular(12),
@@ -83,7 +83,7 @@ class QuickActionsWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          padding: EdgeInsets.all(2.w),
+                          padding: EdgeInsets.all(2.4.w),
                           decoration: BoxDecoration(
                             color: (action['color'] as Color)
                                 .withValues(alpha: 0.1),
@@ -92,12 +92,12 @@ class QuickActionsWidget extends StatelessWidget {
                           child: CustomIconWidget(
                             iconName: action['icon'] as String,
                             color: action['color'] as Color,
-                            size: 24,
+                            size: 26,
                           ),
                         ),
                         SizedBox(height: 1.h),
                         Text(
-                          action['label'] as String,
+                          (action['label'] as String).toUpperCase(),
                           style:
                               AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
                             fontWeight: FontWeight.w500,

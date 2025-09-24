@@ -13,25 +13,25 @@ class ServicesGridWidget extends StatelessWidget {
         'icon': 'flight',
         'label': 'Travel',
         'color': const Color(0xFF2196F3),
-        'route': '/travel-booking',
+        'route': AppRoutes.travelBooking,
       },
       {
         'icon': 'security',
         'label': 'Insurance',
         'color': const Color(0xFF4CAF50),
-        'route': '/insurance',
+        'route': AppRoutes.insurance,
       },
       {
         'icon': 'trending_up',
         'label': 'Investments',
         'color': const Color(0xFFFF9800),
-        'route': '/investments',
+        'route': AppRoutes.investments,
       },
       {
         'icon': 'account_balance',
         'label': 'Loans',
         'color': const Color(0xFF9C27B0),
-        'route': '/loans',
+        'route': AppRoutes.loans,
       },
     ];
 

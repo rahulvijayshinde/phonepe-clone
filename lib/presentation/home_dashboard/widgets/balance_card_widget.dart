@@ -32,16 +32,16 @@ class _BalanceCardWidgetState extends State<BalanceCardWidget> {
           end: Alignment.bottomRight,
           colors: [
             AppTheme.lightTheme.colorScheme.primary,
-            AppTheme.lightTheme.colorScheme.primary.withValues(alpha: 0.8),
+            AppTheme.lightTheme.colorScheme.primary.withValues(alpha: 0.85),
           ],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color:
-                AppTheme.lightTheme.colorScheme.shadow.withValues(alpha: 0.1),
-            offset: const Offset(0, 4),
-            blurRadius: 12,
+            color: AppTheme.lightTheme.colorScheme.shadow
+                .withValues(alpha: 0.12),
+            offset: const Offset(0, 8),
+            blurRadius: 16,
             spreadRadius: 0,
           ),
         ],
@@ -60,32 +60,79 @@ class _BalanceCardWidgetState extends State<BalanceCardWidget> {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _isBalanceVisible = !_isBalanceVisible;
-                  });
-                },
-                child: CustomIconWidget(
-                  iconName: _isBalanceVisible ? 'visibility' : 'visibility_off',
-                  color: AppTheme.lightTheme.colorScheme.onPrimary,
-                  size: 20,
-                ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 2.w, vertical: 0.6.h),
+                    decoration: BoxDecoration(
+                      color: AppTheme.lightTheme.colorScheme.onPrimary
+                          .withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.star,
+                            size: 14, color: Colors.white),
+                        SizedBox(width: 1.w),
+                        Text(
+                          'Rewards',
+                          style: AppTheme.lightTheme.textTheme.labelSmall
+                              ?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 2.w),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _isBalanceVisible = !_isBalanceVisible;
+                      });
+                    },
+                    child: CustomIconWidget(
+                      iconName:
+                          _isBalanceVisible ? 'visibility' : 'visibility_off',
+                      color: AppTheme.lightTheme.colorScheme.onPrimary,
+                      size: 20,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
           SizedBox(height: 1.h),
           Row(
             children: [
-              Text(
-                _isBalanceVisible
-                    ? '₹${widget.balance.toStringAsFixed(2)}'
-                    : '₹****',
-                style: AppTheme.lightTheme.textTheme.headlineMedium?.copyWith(
-                  color: AppTheme.lightTheme.colorScheme.onPrimary,
-                  fontWeight: FontWeight.w700,
+              if (_isBalanceVisible)
+                Text(
+                  '₹${widget.balance.toStringAsFixed(2)}',
+                  style: AppTheme.lightTheme.textTheme.headlineMedium
+                      ?.copyWith(
+                    color: AppTheme.lightTheme.colorScheme.onPrimary,
+                    fontWeight: FontWeight.w800,
+                  ),
+                )
+              else
+                Row(
+                  children: List.generate(6, (i) => i)
+                      .map((_) => Container(
+                            width: 10,
+                            height: 10,
+                            margin:
+                                const EdgeInsets.symmetric(horizontal: 3),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                          ))
+                      .toList(),
                 ),
-              ),
             ],
           ),
           SizedBox(height: 3.h),
